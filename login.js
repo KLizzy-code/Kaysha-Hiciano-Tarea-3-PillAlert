@@ -1,4 +1,4 @@
-// Login simple
+
 const loginForm = document.getElementById('loginForm');
 const demoUser = "admin";
 const demoPass = "1234";
