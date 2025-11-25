@@ -1,5 +1,5 @@
+// registro.js
 let medicinas = JSON.parse(localStorage.getItem("medicinas")) || [];
-
 
 const tabla = document.querySelector("#tabla-medicinas tbody");
 const form = document.getElementById("med-form");
@@ -9,58 +9,59 @@ const editIndex = document.getElementById("edit-index");
 const formTitle = document.getElementById("form-title");
 const btnSubmit = document.getElementById("btn-submit");
 
-
 function renderTabla() {
-tabla.innerHTML = "";
-medicinas.forEach((m, index) => {
-const tr = document.createElement("tr");
-tr.innerHTML = `
-<td>${m.nombre}</td>
-<td>${m.fecha}</td>
-<td>
-<button class='btn btn-warning btn-sm' onclick='editar(${index})'>Editar</button>
-</td>
-`;
-tabla.appendChild(tr);
-});
+    tabla.innerHTML = "";
+    medicinas.forEach((m, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${m.nombre}</td>
+            <td>${m.fecha}</td>
+            <td>
+                <button class='btn btn-warning btn-sm' onclick='editar(${index})'>Editar</button>
+                <button class='btn btn-danger btn-sm' onclick='eliminar(${index})'>Eliminar</button>
+            </td>
+        `;
+        tabla.appendChild(tr);
+    });
 }
-
 
 function guardar() {
-localStorage.setItem("medicinas", JSON.stringify(medicinas));
-renderTabla();
+    localStorage.setItem("medicinas", JSON.stringify(medicinas));
+    renderTabla();
 }
-
 
 form.addEventListener("submit", (e) => {
-e.preventDefault();
+    e.preventDefault();
 
+    if (editIndex.value === "") {
+        medicinas.push({ nombre: nombre.value, fecha: fecha.value });
+    } else {
+        medicinas[editIndex.value] = { nombre: nombre.value, fecha: fecha.value };
+    }
 
-if (editIndex.value === "") {
-medicinas.push({ nombre: nombre.value, fecha: fecha.value });
-} else {
-medicinas[editIndex.value] = { nombre: nombre.value, fecha: fecha.value };
-}
+    guardar();
 
-
-guardar();
-
-
-form.reset();
-editIndex.value = "";
-formTitle.textContent = "Registrar Medicina";
-btnSubmit.textContent = "Guardar";
+    form.reset();
+    editIndex.value = "";
+    formTitle.textContent = "Registrar Medicina";
+    btnSubmit.textContent = "Guardar";
 });
 
-
 function editar(i) {
-const m = medicinas[i];
-nombre.value = m.nombre;
-fecha.value = m.fecha;
-editIndex.value = i;
-formTitle.textContent = "Editar Medicina";
-btnSubmit.textContent = "Actualizar";
+    const m = medicinas[i];
+    nombre.value = m.nombre;
+    fecha.value = m.fecha;
+    editIndex.value = i;
+    formTitle.textContent = "Editar Medicina";
+    btnSubmit.textContent = "Actualizar";
 }
 
+function eliminar(i) {
+    if (confirm("¿Seguro que deseas eliminar este registro?")) {
+        medicinas.splice(i, 1);
+        guardar();
+    }
+}
 
 renderTabla();
+
